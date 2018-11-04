@@ -1,23 +1,23 @@
 # Step 1. Write log
 :log warning "Starting Automatic Backup Script"
 # Step 2. Create global variables
-:global thisdate [/system clock get date]
-:global datetimestring ([:pick $thisdate 0 3] ."-" . [:pick $thisdate 4 6] ."-" . [:pick $thisdate 7 11])
-:global backupfilename ([/system identity get name]."_".$datetimestring."_1w")
+:global today [/system clock get date]
+:global datetimestring ([:pick $today 0 3] ."-" . [:pick $today 4 6] ."-" . [:pick $today 7 11])
+:global backupname ([/system identity get name]."_".$datetimestring."_1w")
 # Step 3. Create local variables
 :local ftpusername "ftp_user"
 :local ftpuserpassword "ftp_password"
 :local ftphostname "ftp_server_ip_addr"
 # Step 4. Start backup
-/system backup save name="$backupfilename"
+/system backup save name="$backupname"
 :delay 5s
-/export compact file="$backupfilename"
+/export compact file="$backupname"
 :log warning "Please wait!"
 :delay 5s
 # Step 5. Send backup
 :log warning "Sending Backup Mikrotik to FTP Server"
-/tool fetch address="$ftphostname" src-path="$backupfilename.backup" user="$ftpusername" password="$ftpuserpassword" port=21 upload=yes mode=ftp dst-path="$backupfilename.backup"
+/tool fetch address="$ftphostname" src-path="$backupname.backup" user="$ftpusername" password="$ftpuserpassword" port=21 upload=yes mode=ftp dst-path="$backupname.backup"
 :delay 1
-/tool fetch address="$ftphostname" src-path="$backupfilename.rsc" user="$ftpusername" password="$ftpuserpassword" port=21 upload=yes mode=ftp dst-path="$backupfilename.rsc"
+/tool fetch address="$ftphostname" src-path="$backupname.rsc" user="$ftpusername" password="$ftpuserpassword" port=21 upload=yes mode=ftp dst-path="$backupname.rsc"
 :delay 1
 :log warning "Back up finished. Well done!"
